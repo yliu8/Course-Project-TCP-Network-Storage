@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include "protocol.h"
 //#define MAX_SEQ 1
-typedef enum { frame_arrival, chksum_err, timeout } event_type;
+//typedef enum { frame_arrival, chksum_err, timeout } event_type;
 void InitSocket ( void );
 void Sender ( void );
 /*************************************************************************
@@ -22,11 +22,6 @@ void Sender ( void );
 ***************************************************************************/
 void InitSocket ( void )
 {
-       printf ( "Input the # of frames : " );
-       scanf ( "%d", &NumOfFrames );
-       printf ( "Input Port Num : " );
-       scanf ( "%d", &Port );
-       printf ( "\n" );
        if ( (sockfd = socket ( AF_INET, SOCK_STREAM, 0 )) < 0 )
        {
               perror ( "Client : socket() failed!\n" );

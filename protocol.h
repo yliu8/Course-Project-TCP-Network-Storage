@@ -36,7 +36,8 @@ typedef struct
 /* --- declaration of Global Variables --- */
 struct sockaddr_in Server, Client;
 int sockfd, newsockfd;
-int Port, NumOfFrames = 10;
+int Port=5000;
+int NumOfFrames = 10;
 char buffer[BUF_SIZE];
 int NETWORK_LAYER, Index = 0;
 time_t timer[MAX_SEQ];

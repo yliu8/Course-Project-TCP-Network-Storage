@@ -10,8 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "protocol.h"
-//#define MAX_SEQ 1
-//typedef enum { frame_arrival, chksum_err, timeout } event_type; 
+
 void InitSocket ( void );
 void Receiver ( void );
 /*************************************************************************

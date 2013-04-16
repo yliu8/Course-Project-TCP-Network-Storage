@@ -1,3 +1,4 @@
+void DieWithSystemMessage(const char *) ;
 int Accept(int , struct sockaddr *, socklen_t *);
 void Bind(int , const struct sockaddr *, socklen_t );
 void Connect(int , const struct sockaddr *, socklen_t );

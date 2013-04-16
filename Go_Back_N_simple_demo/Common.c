@@ -31,7 +31,14 @@ char *StringToLower(char *lowerSting) {
 	}
 	return lowerSting;
 }
-
+void StreamCpyWith0(char *strDes,const char * strSrc,  unsigned char size)
+{
+    int i;
+    for(i=0; i<size; i++)
+    {
+        strDes[i]=strSrc[i];
+    }
+}
 char *trimLeft(char *str)
 {
     if(str==NULL || strlen(str)==0)
@@ -41,14 +48,14 @@ char *trimLeft(char *str)
 }
 char *trimRight(char *str)
 {
-	char *strTmp = str+strlen(str)-1;  
+	char *strTmp = str+strlen(str)-1;
     if(str==NULL || strlen(trimLeft(str))==0)
 		return NULL;
-	while ((*strTmp == ' ' || *strTmp == '\t' || *strTmp == 10) && strTmp>str)   
-	{  
-		*strTmp = '\0';  
-		strTmp--;  
-	}  
+	while ((*strTmp == ' ' || *strTmp == '\t' || *strTmp == 10) && strTmp>str)
+	{
+		*strTmp = '\0';
+		strTmp--;
+	}
 	return str;
 }
 
@@ -56,9 +63,9 @@ char *ReturnFirstString(char *str){
 	int i=0;
 	str=trimLeft(str);
 	if(strlen(str)==0)
-		return NULL;	
+		return NULL;
 	while(str[i]!=' ' && str[i]!='\t')
-	{		
+	{
 		i++;
 	}
 	str[i]='\0';
@@ -68,9 +75,9 @@ char *ModifyString(char *str){
 	int i=0;
 	str=trimLeft(str);
 	if(strlen(str)==0)
-		return NULL;	
+		return NULL;
 	while(str[i]!='\0' )
-	{		
+	{
 		i++;
 	}
 	str[i]=' ';
@@ -79,7 +86,7 @@ char *ModifyString(char *str){
 int CommandCheckAndReturncmdCode(char *str)
 {
 	int cmdCode=0;
-	str=trimLeft(str);//key=login|add|remove|list|quit|[error]	
+	str=trimLeft(str);//key=login|add|remove|list|quit|[error]
 	//puts(str);
 	if(strncasecmp("login",str,5)==0)
 		cmdCode=1;

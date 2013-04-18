@@ -36,8 +36,8 @@ char *getIPbyHostName(char *servName, char *addr)
 }
 void welcome()
 {
-    system("clear");
-    fputs("Hello! Welcome to use TCP Network Storage Service. Now you can do:\n", stdout);
+    	system("clear");
+    	fputs("Hello! Welcome to use TCP Network Storage Service. Now you can do:\n", stdout);
 	fputs("  1) If you have no authorized account, then just Register one for yourself as (Register YourName YourPassword);\n", stdout);
 	fputs("  2) Otherwise, LOGIN with your account as (Login YourName YourPassword);\n", stdout);
 	fputs("  3) For more infomation, just input HELP.\n\n", stdout);
@@ -235,7 +235,7 @@ void Synchronize( int socket)
                             flag=1;
                             //printf("send file1\n");
                             fileUpload(file->d_name ,buf.st_size, socket);
-                            Recv(socket,buffer,BUFSIZE,0);
+                            Recv(socket,buffer,200,0);
 
                             break;
                     }
@@ -246,7 +246,7 @@ void Synchronize( int socket)
 		    {
 		        //printf("send file 2\n");
 		        fileUpload(file->d_name ,buf.st_size, socket);
-                Recv(socket,buffer,BUFSIZE,0);
+                	Recv(socket,buffer,200,0);
 
 		    }
 		}
@@ -269,7 +269,7 @@ int SendFile(const uchar *str, int socket)
 	i=fileUpload(name,0, socket);
 	if(i==1)
 	{
-		Recv(socket,buffer,BUFSIZE,0);
+		Recv(socket,buffer,200,0);
 	}
 	return i;
 }

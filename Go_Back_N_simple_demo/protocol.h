@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include "wrapsock.h"
 
-#define MAX_SEQ 6    
+#define MAX_SEQ 6
 #define BUFFER_SIZE 190
 #define PKT_SIZE 192
 #define MAX_FRM_PAYLOAD 100
@@ -55,10 +55,12 @@ int NETWORK_LAYER, Index = 0;
 int IsFileTransmitting=0;
 time_t timer[MAX_SEQ+1];
 int frmSend=0;
-int frmRecv=0;
-int frmErr=0;
-int frmTmt=0;
-int NWLDBCount=0;
+int frmRtr=0;
+int dataFrmRecvCrt=0;
+int dataFrmRecvErr=0;
+int ACKFrmRecvCrt=0;
+int ACKFrmRecvErr=0;
+int BlockTimes=0;
 
 /* ----- ARQ Protocol Functions ----- */
 void from_network_layer ( packet *p );
@@ -86,7 +88,7 @@ void wait_for_event_recv( event_type *event )
 			   *event = frame_arrival;
 			   return;
 		   //}
-       }   
+       }
 }
 void wait_for_event_send(event_type *event )
 {
@@ -98,11 +100,11 @@ void wait_for_event_send(event_type *event )
        FD_ZERO (&wfds);
        FD_SET ( sockfd, &wfds );
        time (&t); //current time
-       
-       for ( i = 0; i <= MAX_SEQ; i++ ) 
+
+       for ( i = 0; i <= MAX_SEQ; i++ )
 	   {
           if ( timer[i] != 0 && t - timer[i] > 2)//5 seconds means timeout
-          {		 
+          {
               printf ( "Even : TimeOut seq=%d\n",i );
               *event = timeout;
               return;
@@ -115,16 +117,16 @@ void wait_for_event_send(event_type *event )
 			return;
 		}
 		if(select( sockfd+1, &rfds, NULL, NULL, NULL) != -1 )
-        {   
-		   
+        {
+
 		   //if(FD_ISSET(sockfd, &rfds))
 		   //{
 			   //printf ( "Even : frame_arrival\n" );
 			   *event = frame_arrival;
 			   return;
 		   //}
-        } 
-         
+        }
+
 }
   /* --- Message To Packet --- */
   //use four parameters to produce a packet(pkt), return 1(convert successfully)/0(failed)
@@ -201,7 +203,7 @@ int add_ed_to_frame(const frame frm, uchar *streamStr)//streamStr is fixed size:
 {
         uchar edField='\0';
         int i=0;
-        srand ((int)time (NULL));
+        //srand ((int)time (NULL));
         int rdm=0;
         bzero(streamStr,FRM_SIZE);
         edField=edField^frm.size;
@@ -217,14 +219,14 @@ int add_ed_to_frame(const frame frm, uchar *streamStr)//streamStr is fixed size:
         streamStr[2]=frm.ack;
         streamStr[3]=frm.eof;
         memcpy(streamStr+4,frm.data,frm.size);
-        rdm=rand()%10;
-       // printf("\t\t\t\trdm=%d \n",rdm);
-        if(rdm > 7)
+        rdm=rand()%100;
+        //printf("\t\t\t\trdm=%d \n",rdm);
+        if(rdm > 98)
         {
-			//printf("\t\t\t\trdm=%d \n",rdm);
-			//edField=edField^1;
+			printf("\t\t\t\trdm=%d \n",rdm);
+			edField=edField^1;
 		}
-		
+
         streamStr[FRM_SIZE-1]=edField;
         return 0;
 }
@@ -342,7 +344,7 @@ void Refresh()
 		pktEOP='1';
 	else
 		pktEOP='0';
-	
+
 }
 void from_network_layer ( packet *p )
 {
@@ -449,17 +451,18 @@ void Data_Link_Layer_Recv()
 		wait_for_event_recv(&event);
 		switch(event)
 		{
-			case frame_arrival: 
+			case frame_arrival:
 				 if(from_physical_layer(&bufRecvFrm[frmRecvCount])==0) //cksum_err here
 				 {
-					 frmRecv++;
-					 frmErr++;
-					 printf("CK_ERROR\n");
+
+					 dataFrmRecvErr++;
+					 printf("CK_ERROR Seq=%d\n",bufRecvFrm[frmRecvCount].seq);
 					 break;
 				 }
 				 else
 				 {
-					 frmRecv++;
+					 //frmRecv++;
+				 	 dataFrmRecvCrt++;
 					 if(bufRecvFrm[frmRecvCount].seq==frame_expected)
 					 {
 						 frmRecvCount++;
@@ -482,30 +485,30 @@ void Data_Link_Layer_Recv()
 						 }
 						 send_ACK(frame_expected);//send ACK frame
 						 frmSend++;
-						 printf("ACK_Send=%d\tRecv_COUNT=%d\n",frame_expected,COUNT++);
+						 //printf("ACK_Send=%d\tRecv_COUNT=%d\n",frame_expected,COUNT++);
 						 inc(frame_expected);
 					 }
 					 else
 					 {
 						 send_ACK(bufRecvFrm[frmRecvCount].seq);
-						 frmSend++;
+						 frmRtr++;
 						 printf("Re-Send_SEQ=%d\n",bufRecvFrm[frmRecvCount].seq);
 					 }
 				 }
 				 break;
-			//case cksum_err:break;// It is included in frame_arrival event	
 		}
 		if(IsEveryThingTransmitted==1)
-		{		
+		{
 			//send_ACK(frame_expected);
 			break;
-		}			
+		}
 	}
-	printf("===============================\n");
-	printf(" # of frame sent:\t%d\n",frmSend);
-	printf(" # of frame recv:\t%d\n",frmRecv);
-	printf(" # of frame erro:\t%d\n",frmErr);
-	printf("===============================\n");
+	printf("==============================================================\n");
+	printf("# of acknowledgments sent(No retransmissions):       \t%d\n",frmSend);
+	printf("# of acknowledgments retransmissions sent:           \t%d\n",frmRtr);
+	printf("# of data frame received correctly:         	     \t%d\n",dataFrmRecvCrt);
+	printf("# of data frame received with errors:                \t%d\n",dataFrmRecvErr);
+	printf("==============================================================\n");
 }
 void Data_Link_Layer_Send()
 {
@@ -523,7 +526,7 @@ void Data_Link_Layer_Send()
 	uchar frmEOF[2]={'0','0'};
 	int frmCount=0;
 	uchar lastSeq=MAX_SEQ+1;
-	
+
 	frame r,s,bufFrm[MAX_SEQ+1];
 	packet pkt;
 	int IsEveryThingTransmitted=0;
@@ -536,7 +539,7 @@ void Data_Link_Layer_Send()
 		{
 			case network_layer_ready:
 				 if(NoMore_network_layer_ready==0)
-				 {			 
+				 {
 					 from_network_layer(&pkt);//divide the packet into 1~2 frame
 					 frmCount=packet_to_two_buffers_for_frame(pkt,strBuffer,size,frmEOF);
 					 for(i=0; i < frmCount; i++)
@@ -546,8 +549,8 @@ void Data_Link_Layer_Send()
 						send_data(next_frame_to_send,bufFrm);
 						frmSend++;
 						//printf("Seq=%d\tACK_expected=%d\tOUNT=%d, time=%ld\n",next_frame_to_send,ACK_expected,COUNT++,timer[next_frame_to_send]);
-						printf("Seq=%d\tACK_expected=%d\tSend_COUNT=%d\n",next_frame_to_send,ACK_expected,COUNT++);
-						
+						//printf("Seq=%d\tACK_expected=%d\tSend_COUNT=%d\tnbuffered=%d\n",next_frame_to_send,ACK_expected,COUNT++,nbuffered);
+
 						if(frmEOF[i]=='1')
 						{
 							lastSeq=next_frame_to_send;
@@ -555,20 +558,21 @@ void Data_Link_Layer_Send()
 						}
 						inc(next_frame_to_send);
 					 }
-				 }		 
+				 }
 				 break;
-			case frame_arrival: 
+			case frame_arrival:
 				 if(from_physical_layer(&r)==0) //cksum_err here
 				 {
-					 frmRecv++;
-					 frmErr++;
-					 printf("CKsum_error\n");
+					 ACKFrmRecvErr++;
+					 //printf("CKsum_error ACK_Recv=%d\n",r.ack);
+					 //send_data(r.ack,bufFrm);
+					 //frmSend++;
 					 break;
 				 }
 				 else
 				 {
-					 frmRecv++;
-					 //printf("ACK=%d\n",r.ack); 
+					 ACKFrmRecvCrt++;
+					 //printf("ACK=%d\n",r.ack);
 					 if(r.ack==lastSeq)
 					 {
 						IsEveryThingTransmitted=1;
@@ -580,22 +584,21 @@ void Data_Link_Layer_Send()
 						 stop_timer(ACK_expected);
 						 inc(ACK_expected);
 					 }
-					
+
 				 }
 				 break;
 			//case cksum_err:break;// It is included in frame_arrival event
-			case timeout: 
-				 frmTmt++;
+			case timeout:
+				 frmRtr++;
 				 if(lastSeq!=MAX_SEQ+1)
 					break;
-				 printf("TimeOut Here\nACK_expected=%d\tnbuffered=%d\n",ACK_expected,nbuffered);
+				 //printf("TimeOut Here\nACK_expected=%d\tnbuffered=%d\n",ACK_expected,nbuffered);
 				 next_frame_to_send=ACK_expected;
 				 for(i=1;i<=nbuffered;i++)
 				 {
 					 send_data(next_frame_to_send,bufFrm);
-					 frmSend++;
-					 //start_timer(next_frame_to_send);
-					 printf("next_frame_to_send=%d\n",next_frame_to_send);
+					 frmRtr++;
+					 //printf("next_frame_to_send=%d\n",next_frame_to_send);
 					 inc(next_frame_to_send);
 				 }
 				 break;
@@ -604,7 +607,7 @@ void Data_Link_Layer_Send()
 		{
 			//break;
 		}
-		if(frmTmt>=13)	
+		if(frmRtr>=13)
 			break;
 		if(nbuffered<MAX_SEQ-1)// ensure there will be two more free spaces in the buffer
 		{
@@ -616,17 +619,17 @@ void Data_Link_Layer_Send()
 			disable_network_layer();
 			if(flag==0)
 			{
-				NWLDBCount++;	
+				BlockTimes++;
 				flag=1;
 			}
-		}	
+		}
 	}
-	printf("===============================\n");
-	printf(" # of frame Sent:   \t%d\n",frmSend);
-	printf(" # of frame recv:   \t%d\n",frmRecv);
-	printf(" # of frame erro:   \t%d\n",frmErr);
-	printf(" # of frame TimeOut:\t%d\n",frmTmt);
-	printf(" # of NWL disabled: \t%d\n",NWLDBCount);
-	printf("===============================\n");
+	printf("==============================================================\n");
+	printf("# of data frames sent(No retransmissions):       \t%d\n",frmSend);
+	printf("# of retransmissions sent:                       \t%d\n",frmRtr);
+	printf("# of acknowledgments received correctly:         \t%d\n",ACKFrmRecvCrt);
+	printf("# of acknowledgements received with errors:      \t%d\n",ACKFrmRecvErr);
+	printf("# of times DDL blocks due to a full window.:     \t%d\n",BlockTimes);
+	printf("==============================================================\n");
 }
 

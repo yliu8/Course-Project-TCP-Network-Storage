@@ -97,7 +97,7 @@ void HandleTCPClient(int clntSocket)
                         pbuffer="Your old passWord is wrong!\n";
                     }
                     break;
-            case 4: fileSend(buffer,clntSocket);break;
+            case 4: fileSend(buffer,clntSocket);goto test; break;
             case 5: if(Delete(buffer)==0)
                     {
                         bzero(buffer,MAX_FRM_PAYLOAD);

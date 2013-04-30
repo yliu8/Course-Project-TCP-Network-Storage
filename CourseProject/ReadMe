@@ -56,14 +56,6 @@ There are 11 souce code files:
 	>Remove records from the client configure file, so "Synchronize" command will upload *every* file to Server
 13. show
 	>Show the statistics of the frames
-14.	Recv (additional command)
-	>This is an additional command to clean the recv() buffer of socket. Because, when “Synchronize” is executed, maybe multiple files will be uploaded to the server in one time. As the server will reply to the client each time the server receives a file. So the client will leave a lot of information in the recv() buffer of socket, which will interfere the next command to be executed. Here, we recommend the user re-login after “Synchronize” command, but if the use won’t do this, he can use “Recv” command to do some help. But this won’t always work.
-
-=== Design changes made since the original design report ===
-We made a lot of changes, as when we met the professor for the second time, the professor said our project was so complex, and recommended us to delete the function of files sharing. So, we did the changes as below:
-1. We use txt file to replace MySQL. Since we won't implement files sharing, we made a decision that there was no need to use MySQL in our project any more.
-2. "Synchronization" is implemented by command, which means the Client won't do it automatically every time interval set.
-3. We add some commands, which we think is useful to users.
 
 === Accomplished Functions ===
 1. We implemented all the commands described above.(But sometimes "synchronize", "download" break down. [Partially work])

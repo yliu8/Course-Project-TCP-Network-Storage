@@ -26,44 +26,44 @@ Files Introduction
 >2. Run:   
 >>a. Run Server: Type `./Server` to run server    
 >>b. Run Client: Type `./Client IP_Address` to run client, then you can input different command to do diffeent things.    
->>>* The port we use here is 5000.       
+>>>* The port we use here is `5000`.       
 >>>* There is a test account: `login hzhou 950288`   
 
 ###Command Support 
 >1. Register userName password     
->>If you do not have your account, you can use "Register" command to create one for yourself(Be sure to keep your password for your account).     
+>>If you do not have your account, you can use `Register` command to create one for yourself(Be sure to keep your password for your account).     
 >2. Login userName password
-	>Since you already have your account, you can use "login" command to log on.
-3. ModifyPwd oldPassword newPassword
-	>You know, when you feel bored with your password, you can change it with this command
-4. Download fileName
-	>Since Server will never send Client files automatically, so you need this command to download files from Server
-5. Delete fileName
-	>Delete the file in the server side, as you like
-6. Synchronize [We recommend you re-login after this command executed]
-	>batch upload, if some files have been updated after last "Synchronize"
-7. List
-	>See your file in the server side
-8. Help
-	>If you don't this system well, you can use "help" command to help you know it better
-9. Quit
-	>After you finish everything, you can exit with "quit" command
-10. Send fileName
-	>single file sent to Server
-11. clear
-	>Clear everything from the screen, 
-12. clsRecords
-	>Remove records from the client configure file, so "Synchronize" command will upload *every* file to Server
-13. show
-	>Show the statistics of the frames
+>>Since you already have your account, you can use `login` command to log on.
+>3. ModifyPwd oldPassword newPassword
+>>You know, when you feel bored with your password, you can change it with this command
+>4. Download fileName
+>>Since Server will never send Client files automatically, so you need this command to download files from Server
+>5. Delete fileName
+>>Delete the file in the server side, as you like
+>6. Synchronize [We recommend you re-login after this command executed]
+>>batch upload, if some files have been updated after last "Synchronize"
+>7. List
+>>See your file in the server side
+>8. Help
+>>If you don't this system well, you can use `help` command to help you know it better
+>9. Quit
+>>After you finish everything, you can exit with `quit` command
+>10. Send fileName
+>>single file sent to Server
+>11. clear
+>>Clear everything from the screen, 
+>12. clsRecords
+>>Remove records from the client configure file, so `Synchronize` command will upload *every* file to Server
+>13. show
+>>Show the statistics of the frames
 
-=== Accomplished Functions ===
-1. We implemented all the commands described above.(But sometimes "synchronize", "download" break down. [Partially work])
-2. We implemented the process: message -> packet -> frame -> stream (string) -> frame -> packet -> message. During the process, we also did stuffing and added Error Detection field(It is done in physical layer) to frame. (No Go Back N in final program, but we give an extra demo for that.)
+###Accomplished Functions  
+>1. We implemented all the commands described above.    
+>2. We implemented the process: `message -> packet -> frame -> stream (string) -> frame -> packet -> message`. During the process, we also did stuffing and added Error Detection field(It is done in physical layer) to frame. (No Go Back N in final program, but we give an extra demo for that.)     
 
-=== Unaccomplished Functions ===
-1. "Go Back N" works partially. (I believe that it happened because our wait_for_event() function couldn't work well.)
+###Unaccomplished Functions
+1. "Go Back N" works partially. (I believe that it happened because our `wait_for_event()` function couldn't work well.)
 2. We didn't add "Go Back N" to our final project, but we can show a simple demo about our work for "Go Back N".
 
-=== We are Team 10 ===
+###We are Team 10
 If you have anything confused, do not hesitate to contact me: hzhou@wpi.edu

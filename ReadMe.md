@@ -28,3 +28,16 @@ Register name passwd;	stop synchronize; 	start synchronize; 	quit...
 User can share their files with others [Public or Particular users].       
 Commands designed for this:       
 Share FileName [OtherUserName];  Download FileName;	list... [*Note: List command will return all the files available to the logged user, which will include other users�� files shared.]
+
+--------------------
+1. "CourseProject" is for final project.
+2. "Go_Back_N_simple_demo" is a simple demo for Go Back N, as we couldn't add it to our final program.
+
+There are still many bugs! I will try to fix it when I find one.
+
+
+You can find more information about this code with the url below:
+http://web.cs.wpi.edu/~rek/Grad_Nets/Spring2013/CourseProject_S13.pdf
+
+Thanks
+Team 10

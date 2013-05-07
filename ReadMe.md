@@ -1,6 +1,6 @@
 ##Proposal for Course Project: TCP Network Storage
 
-Team members: Pei Zhang , Ya Liu , Hao Zhou        
+Team members: Hao Zhou , Pei Zhang , Ya Liu        
 We try to implement TCP Network Storage (TNS), which is like DROPBOX to some extent.      
 
 When a user run Client in his computer for the first time, the Client will ask the user using his authorized user name and password to log in to the Server. After that, the Client need the user to set the path of a directory, which the Client will monitor all the time. [*Note: The Client will store the user name and path into a local file, so that the client will no longer ask the user to type them every time it runs.]       

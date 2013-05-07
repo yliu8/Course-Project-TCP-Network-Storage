@@ -30,8 +30,8 @@ Commands designed for this:
 Share FileName [OtherUserName];  Download FileName;	list... [*Note: List command will return all the files available to the logged user, which will include other users�� files shared.]
 
 --------------------
-1. "CourseProject" is for final project.
-2. "Go_Back_N_simple_demo" is a simple demo for Go Back N, as we couldn't add it to our final program.
+>1. "CourseProject" is for final project.
+>2. "Go_Back_N_simple_demo" is a simple demo for Go Back N, as we couldn't add it to our final program.
 
 There are still many bugs! I will try to fix it when I find one.
 

@@ -1,4 +1,4 @@
-##Proposal for Course Project: TCP Network Storage
+##Proposal for Course Project: TCP Network Storage(Proposal has been changed with the final program)
 
 Team members: Hao Zhou , Pei Zhang , Ya Liu        
 We try to implement TCP Network Storage (TNS), which is like DROPBOX to some extent.      
